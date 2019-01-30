@@ -1,0 +1,4 @@
+/static/
+/node_modules/
+muse-ripple/**/*
+dist/**/*
