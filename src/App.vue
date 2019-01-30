@@ -35,6 +35,7 @@ export default {
   position: relative;
   font-size: 24px;
   background: #fff;
+  overflow: hidden;
 }
 .page {
   height: 100%;

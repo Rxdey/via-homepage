@@ -1,0 +1,15 @@
+// import { LOCAL_HOST as HOST } from './interface.conf';
+// DEV_HOST SIT_HOST UAT_HOS
+// export const banner = {
+//   url: `${HOST}home/banner`,
+//   method: 'post'
+// };
+export const baidu = {
+  url: 'http://suggestion.baidu.com/su',
+  method: 'get',
+  type: 'jsonp'
+};
+
+export default {
+  baidu
+};
