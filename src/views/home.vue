@@ -3,11 +3,14 @@
     <div class="menu" @click="popShow=true"><i class="iconfont icon-add"></i></div>
     <div class="home-block">
       <div class="home__logo">
-        <img :src="isLogo" alt="">
+        <img :src="logo" alt="" v-if="logo">
+        <p v-else class="logo-name">{{currentRule.name}}</p>
       </div>
       <div class="home__search">
         <div class="search-form">
-          <div class="btn-change"></div>
+          <div class="btn-logo">
+            <i class="iconfont icon-bianji"></i>
+          </div>
           <div class="input">
             <input type="text" autocomplete="off" autofocus="autofocus" v-model="val" name="search" id="search" placeholder="准备搜点啥啊~" @input="change" @focus="onFocus" @blur="onBlur" @keydown.enter="handleSubmit">
           </div>
@@ -15,7 +18,7 @@
             <i @click="handleClear" class="iconfont icon-31guanbi" v-show="isFocus"></i>
           </div>
         </div>
-        <div class="search-drop" v-show="isSearch">
+        <div class="search-drop" v-show="isSearch&&dropList.length">
           <ul class="drop-list">
             <li class="drop-child" v-for="(item, index) in dropList" :key="index" @click="handleChooes(index)">{{item}}</li>
           </ul>
@@ -40,49 +43,58 @@
       </div>
     </div>
     <div class="background" :style="`background-image:url(${bgimg});filter:blur(${blur}px)`"></div>
-    <popup v-model="popShow" position="right" width="60%">
-      <engine></engine>
+    <popup v-model="popShow" position="right" class="popup">
+      <engine @add="addEngine" @edit="handleEdit" @del="handleDel"></engine>
     </popup>
+
+    <van-dialog v-model="isAddEngine" show-cancel-button title="添加搜索引擎" :before-close="beforeClose">
+
+      <field v-model="engineName" maxlength="5" label="名称" placeholder="请输入搜索引擎名称" />
+      <field v-model="engineUrl" maxlength="200" type="textarea" label="网址" placeholder="网址（用“%s”代替搜索字词）" />
+
+    </van-dialog>
   </div>
 </template>
 
 <script>
-
+import { Field } from 'vant';
 import Swiper from 'swiper';
+import { mapState } from 'vuex';
 import 'swiper/dist/css/swiper.css';
 import { http, home } from '@/common/server';
 import { popup } from '@/components/index';
-import conf from '@/conf/conf';
+// import conf from '@/conf/conf';
 import engine from './engine.vue';
 
-const { bgimg, logo, blur, searchRules } = conf;
+// const { bgimg, logo, blur, searchRules, defaultRule } = conf;
 export default {
   name: 'home',
   props: {
   },
   data () {
     return {
-      bgimg,
-      logo,
-      blur,
       val: '',
       isFocus: false,
       dropList: [],
       isSearch: false,
       swiper: null,
       popShow: false,
-      addEngine: false
+      isAddEngine: false,
+      engineName: '',
+      engineUrl: ''
     };
   },
   computed: {
-    searchRules () {
-      return searchRules;
-    },
-    isLogo () {
-      if (!logo) {
-        return searchRules[this.engine].logo;
-      }
-      return logo;
+    ...mapState({
+      bgimg: state => state.bgimg,
+      defaultLogo: state => state.logo,
+      blur: state => state.blur,
+      defaultRule: state => state.defaultRule,
+      searchRules: state => [...state.searchRules, ...state.addRules]
+    }),
+    logo () { return !this.defaultLogo ? this.searchRules[this.defaultRule].logo : this.defaultLogo; },
+    currentRule () {
+      return this.searchRules[this.defaultRule];
     }
   },
   mounted () {
@@ -96,10 +108,39 @@ export default {
       }
     });
   },
-  watch: {
-  },
   methods: {
+    handleEdit() {
 
+    },
+    handleDel() {},
+    beforeClose (action, done) {
+      if (action === 'confirm') {
+        if (!this.engineName || !this.engineUrl) {
+          this.toast({ message: '请输入完整信息', position: 'bottom' });
+          done(false);
+          return;
+        }
+        this.handleAddEngine();
+      } else {
+        this.engineName = '';
+        this.engineUrl = '';
+      }
+      done();
+    },
+    handleAddEngine () {
+      const data = {
+        name: this.engineName,
+        url: this.engineUrl,
+        readonly: false,
+        logo: ''
+      };
+      this.$store.commit('updateSearchRules', data);
+    },
+    addEngine () {
+      this.popShow = false;
+      this.isAddEngine = true;
+    },
+    // input control
     change () {
       if (!this.val) {
         this.dropList = [];
@@ -128,16 +169,16 @@ export default {
       this.handleSubmit();
     },
     handleSubmit () {
-      const url = searchRules[this.engine].url.replace('%s', this.val);
+      const url = this.currentRule.url.replace('%s', this.val);
       window.location.href = url;
     },
     handleClear () {
       this.val = '';
       this.isFocus = false;
-    },
+    }
   },
   components: {
-    popup, engine
+    popup, engine, Field
   }
 };
 </script>
@@ -146,6 +187,13 @@ export default {
 @import url("../assets/css/public.less");
 * {
   box-sizing: border-box;
+}
+.popup {
+  width: 60%;
+  height: 100%;
+}
+.van-dialog__header {
+  padding: 30px 0;
 }
 .home {
   background-color: #fff;
@@ -162,7 +210,7 @@ export default {
   }
   .home-block {
     position: absolute;
-    top: 10%;
+    top: 15%;
     width: 100%;
     z-index: 100;
     max-width: 1000px;
@@ -172,7 +220,7 @@ export default {
   &__logo {
     width: 300px;
     height: 144px;
-    margin: 0 auto 40px auto;
+    margin: 0 auto 20px auto;
     // position: absolute;
     // top: 15%;
     // left: 50%;
@@ -182,6 +230,12 @@ export default {
     flex-flow: row;
     align-items: center;
     z-index: 8;
+    .logo-name {
+      text-align: center;
+      font-size: 80px;
+      color: #fff;
+      width: 100%;
+    }
     img {
       width: 100%;
       max-height: 100%;
@@ -195,9 +249,21 @@ export default {
     // z-index: 99;
     width: 100%;
     // top: 28%;
+    .btn-logo{
+      position: absolute;
+      width: 60px;
+      text-align: center;
+      left: 0;
+      top: 0;
+      height: 100%;
+      line-height: 80px;
+      i{
+        font-size: 38px;
+      }
+    }
     .search-form {
       width: 100%;
-      padding: 0 40px;
+      padding: 0 60px;
       border-radius: 40px;
       background: #fff;
       border: 1px solid #e5e5e5;
@@ -273,15 +339,6 @@ export default {
       }
     }
   }
-  // .mask {
-  //   position: absolute;
-  //   background: rgba(0, 0, 0, 0.3);
-  //   width: 100%;
-  //   height: 100%;
-  //   z-index: 9;
-  //   top: 0;
-  //   left: 0;
-  // }
   .background {
     position: absolute;
     top: 0;
@@ -325,64 +382,6 @@ export default {
       margin-top: 15px;
       font-size: 24px;
       color: #fff;
-    }
-  }
-}
-
-.user-setting {
-  width: 100%;
-  background: #fff;
-  height: 100%;
-  overflow-y: auto;
-  // padding: 0 30px;
-  .icon {
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    margin-right: 15px;
-    img {
-      width: 30px;
-      height: 30px;
-    }
-  }
-  .title {
-    font-size: 28px;
-    // color: #666;
-    background: @color-blue;
-    color: #fff;
-    border-bottom: 1px solid #e5e5e5;
-    padding: 20px 30px;
-    text-align: left;
-    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-    i {
-      font-size: 28px;
-    }
-  }
-  .tool-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 90px;
-    .box-shadow;
-    display: flex;
-    flex-flow: row;
-    .rx-btn {
-      flex: 1;
-      width: 50%;
-      text-align: center;
-      line-height: 90px;
-      font-size: 28px;
-      // &.edit{
-      //   background: @color-green;
-      //   color: #fff;
-      // }
-      &.add {
-        background: @color-red;
-        color: #fff;
-      }
     }
   }
 }

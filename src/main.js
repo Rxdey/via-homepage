@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { Dialog } from 'vant';
 import 'lib-flexible';
 import loading from 'vue-loading-rx';
 import 'vue-loading-rx/dist/vue-loading.css';
@@ -10,6 +11,7 @@ import mixins from './common/mixin';
 import { ripple, transferDom } from './components/index';
 
 Vue.use(loading);
+Vue.use(Dialog);
 Vue.mixin(mixins);
 Vue.directive('ripple', ripple);
 Vue.directive('transferDom', transferDom);

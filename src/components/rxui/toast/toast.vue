@@ -17,7 +17,7 @@
 
 <script type="text/ecmascript-6">
 export default {
-  data() {
+  data () {
     return {
       isShow: false,
       message: '',
@@ -25,13 +25,13 @@ export default {
       size: 'small',
       position: 'middle',
       isMask: false,
-      delay: 3000,
+      delay: 300000,
       isIcon: false,
       width: 'auto'
     };
   },
   watch: {
-    isShow(to) {
+    isShow (to) {
       let timeout;
       if (to) {
         timeout = setTimeout(() => {
@@ -57,7 +57,7 @@ export default {
   left: 0;
 }
 .rx-toast {
-  z-index: 2000;
+  z-index: 99999;
   position: fixed;
   padding: 10px 15px;
   background: rgba(0, 0, 0, 0.7);
@@ -80,7 +80,8 @@ export default {
     top: 10%;
   }
   &.bottom {
-    top: 80%;
+    left: 50%;
+    bottom: 10%;
   }
   &.large {
     padding: 10px 20px;
