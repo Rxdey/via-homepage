@@ -7,11 +7,12 @@ import App from './App.vue';
 import router from './router';
 import store from './store/store';
 import mixins from './common/mixin';
-import { ripple } from './components/index';
+import { ripple, transferDom } from './components/index';
 
-Vue.use(loading)
-  .mixin(mixins)
-  .directive('ripple', ripple);
+Vue.use(loading);
+Vue.mixin(mixins);
+Vue.directive('ripple', ripple);
+Vue.directive('transferDom', transferDom);
 
 Vue.config.productionTip = false;
 

@@ -1,12 +1,13 @@
 <template>
   <div class="home">
-    <div class="menu"><i class="iconfont icon-add"></i></div>
+    <div class="menu" @click="popShow=true"><i class="iconfont icon-add"></i></div>
     <div class="home-block">
       <div class="home__logo">
         <img :src="isLogo" alt="">
       </div>
       <div class="home__search">
         <div class="search-form">
+          <div class="btn-change"></div>
           <div class="input">
             <input type="text" autocomplete="off" autofocus="autofocus" v-model="val" name="search" id="search" placeholder="准备搜点啥啊~" @input="change" @focus="onFocus" @blur="onBlur" @keydown.enter="handleSubmit">
           </div>
@@ -39,19 +40,22 @@
       </div>
     </div>
     <div class="background" :style="`background-image:url(${bgimg});filter:blur(${blur}px)`"></div>
-    <transition name="fade">
-      <!-- <div class="mask" v-show="isFocus"></div> -->
-    </transition>
+    <popup v-model="popShow" position="right" width="60%">
+      <engine></engine>
+    </popup>
   </div>
 </template>
 
 <script>
+
 import Swiper from 'swiper';
 import 'swiper/dist/css/swiper.css';
 import { http, home } from '@/common/server';
+import { popup } from '@/components/index';
 import conf from '@/conf/conf';
+import engine from './engine.vue';
 
-const { bgimg, logo, blur, searchRules, defaultRule } = conf;
+const { bgimg, logo, blur, searchRules } = conf;
 export default {
   name: 'home',
   props: {
@@ -65,18 +69,21 @@ export default {
       isFocus: false,
       dropList: [],
       isSearch: false,
-      swiper: null
+      swiper: null,
+      popShow: false,
+      addEngine: false
     };
   },
   computed: {
+    searchRules () {
+      return searchRules;
+    },
     isLogo () {
       if (!logo) {
-        return searchRules[defaultRule].logo;
+        return searchRules[this.engine].logo;
       }
       return logo;
     }
-  },
-  created () {
   },
   mounted () {
     this.swiper = new Swiper('.swiper-container', {
@@ -92,6 +99,7 @@ export default {
   watch: {
   },
   methods: {
+
     change () {
       if (!this.val) {
         this.dropList = [];
@@ -120,20 +128,22 @@ export default {
       this.handleSubmit();
     },
     handleSubmit () {
-      const url = searchRules[defaultRule].url.replace('%s', this.val);
+      const url = searchRules[this.engine].url.replace('%s', this.val);
       window.location.href = url;
     },
     handleClear () {
       this.val = '';
       this.isFocus = false;
-    }
+    },
   },
   components: {
+    popup, engine
   }
 };
 </script>
 
 <style lang="less">
+@import url("../assets/css/public.less");
 * {
   box-sizing: border-box;
 }
@@ -144,6 +154,7 @@ export default {
     top: 30px;
     right: 30px;
     z-index: 101;
+    cursor: pointer;
     i {
       color: #fff;
       font-size: 40px;
@@ -151,9 +162,12 @@ export default {
   }
   .home-block {
     position: absolute;
-    top: 15%;
+    top: 10%;
     width: 100%;
     z-index: 100;
+    max-width: 1000px;
+    left: 50%;
+    transform: translateX(-50%);
   }
   &__logo {
     width: 300px;
@@ -214,6 +228,7 @@ export default {
       left: 0;
       width: 100%;
       padding: 0 50px;
+      z-index: 100;
       .drop-list {
         border-radius: 40px;
         background: #fff;
@@ -296,8 +311,13 @@ export default {
       color: #fff;
       font-size: 28px;
       letter-spacing: 3px;
+      cursor: pointer;
       span {
         font-size: 40px;
+      }
+      transition: 0.3s all;
+      &:active {
+        transform: scale(0.8);
       }
     }
     p {
@@ -308,6 +328,65 @@ export default {
     }
   }
 }
+
+.user-setting {
+  width: 100%;
+  background: #fff;
+  height: 100%;
+  overflow-y: auto;
+  // padding: 0 30px;
+  .icon {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    margin-right: 15px;
+    img {
+      width: 30px;
+      height: 30px;
+    }
+  }
+  .title {
+    font-size: 28px;
+    // color: #666;
+    background: @color-blue;
+    color: #fff;
+    border-bottom: 1px solid #e5e5e5;
+    padding: 20px 30px;
+    text-align: left;
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    i {
+      font-size: 28px;
+    }
+  }
+  .tool-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 90px;
+    .box-shadow;
+    display: flex;
+    flex-flow: row;
+    .rx-btn {
+      flex: 1;
+      width: 50%;
+      text-align: center;
+      line-height: 90px;
+      font-size: 28px;
+      // &.edit{
+      //   background: @color-green;
+      //   color: #fff;
+      // }
+      &.add {
+        background: @color-red;
+        color: #fff;
+      }
+    }
+  }
+}
+
 .fade-enter-active,
 .fade-leave-active {
   opacity: 1;

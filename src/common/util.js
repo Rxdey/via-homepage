@@ -42,7 +42,7 @@ export const getCode = name => {
 };
 
 // 随机字符串
-export const createId = (len = 5) => {
+export const createRands = (len = 5) => {
   if (len > 11) {
     len = 11;
   }
@@ -92,3 +92,5 @@ export const vibrate = (delay = 1000) => {
     navigator.vibrate(delay);
   }
 };
+// url解析
+export const urlReg = /(\w+):\/\/([^\:|\/]+)(\:\d*)?(.*\/)([^#|\?|\n]+)?(#.*)?(\?.*)?/i;
