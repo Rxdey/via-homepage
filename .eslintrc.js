@@ -36,7 +36,8 @@ module.exports = {
     'func-names': 0,
     "import/no-extraneous-dependencies": 0,
     "object-curly-newline": 0,
-    "no-useless-escape": 0
+    "no-useless-escape": 0,
+    "linebreak-style": 0,
   },
   parserOptions: {
     parser: 'babel-eslint'
