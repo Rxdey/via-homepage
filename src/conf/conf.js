@@ -35,7 +35,9 @@ const conf = {
   logo: getItem('logo'), // logo
   blur: getItem('blur') || 0, // 模糊
   searchEngine: changeArray(getItem('searchEngine')),
-  defaultRule: isDef(getItem('defaultRule'))
+  defaultRule: isDef(getItem('defaultRule')),
+  height: getItem('height') || '10%',
+  isLogo: getItem('isLogo') || '1'
 };
 
 export default conf;

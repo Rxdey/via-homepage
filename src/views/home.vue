@@ -1,10 +1,9 @@
 <template>
   <div class="home">
     <div class="menu" @click="settingShow=true"><i class="iconfont icon-set"></i></div>
-    <div class="home-block">
-      <div class="home__logo">
-        <img :src="logo" alt="" v-if="logo">
-        <p v-else class="logo-name">{{searchEngine[defaultRule].name}}</p>
+    <div class="home-block" :style="`top:${height}`">
+      <div class="home__logo" v-show="isLogo" :style="logo&&`background-image:url(${logo})`">
+        <p v-if="!logo" class="logo-name">{{searchEngine[defaultRule].name}}</p>
       </div>
       <div class="home__search">
         <div class="search-form">
@@ -24,7 +23,7 @@
           </ul>
         </div>
       </div>
-      <div class="home__list">
+      <!-- <div class="home__list">
         <div class="swiper-container">
           <div class="swiper-wrapper">
             <div class="swiper-slide">
@@ -40,12 +39,13 @@
           </div>
           <div class="swiper-pagination"></div>
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="background" :style="`background-image:url(${bgimg});filter:blur(${blur}px)`"></div>
     <popup v-model="settingShow" position="right" class="popup">
-      <setting></setting>
+      <setting @selectEngine="selectEngine"></setting>
     </popup>
+
     <popup v-model="popShow" position="right" class="popup">
       <engine @add="addEngine" @edit="handleEdit" @del="handleDel"></engine>
     </popup>
@@ -82,9 +82,9 @@ export default {
       dropList: [],
       isSearch: false,
       swiper: null,
-      popShow: false,
-      settingShow: false,
-      isAddEngine: false,
+      popShow: false, // 搜索引擎管理
+      settingShow: false, // 设置
+      isAddEngine: false, // 添加搜索
       engineName: '',
       engineUrl: '',
       isEdit: false
@@ -93,14 +93,14 @@ export default {
   computed: {
     ...mapState({
       bgimg: state => state.bgimg,
-      defaultLogo: state => state.logo,
       blur: state => state.blur,
+      height: state => state.height,
       defaultRule: state => state.defaultRule,
       searchEngine: state => state.searchEngine,
       // currentRule: state => state.searchEngine[state.defaultRule],
-      logo: state => (!state.defaultLogo ? state.searchEngine[state.defaultRule].logo : state.defaultLogo)
+      logo: state => (!state.logo ? state.searchEngine[state.defaultRule].logo : state.logo),
+      isLogo: state => state.isLogo
     })
-    // logo () { return !this.defaultLogo ? this.searchEngine[this.defaultRule].logo : this.defaultLogo; }
   },
   mounted () {
     this.swiper = new Swiper('.swiper-container', {
@@ -114,6 +114,11 @@ export default {
     });
   },
   methods: {
+    selectEngine () {
+      this.settingShow = false;
+      this.popShow = true;
+    },
+    // 修改搜索引擎
     handleEdit () {
       this.engineName = this.searchEngine[this.defaultRule].name;
       this.engineUrl = this.searchEngine[this.defaultRule].url;
@@ -121,6 +126,7 @@ export default {
       this.popShow = false;
       this.isEdit = true;
     },
+    // 删除搜索引擎
     handleDel () {
       this.$store.commit('delSearchEngine', this.defaultRule);
     },
@@ -138,6 +144,7 @@ export default {
       }
       done();
     },
+    // 添加搜索引擎
     handleAddEngine () {
       const data = {
         name: this.engineName,
@@ -241,6 +248,9 @@ export default {
     // top: 15%;
     // left: 50%;
     // transform: translateX(-50%);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
     overflow: hidden;
     display: flex;
     flex-flow: row;

@@ -25,7 +25,7 @@ export default {
       size: 'small',
       position: 'middle',
       isMask: false,
-      delay: 300000,
+      delay: 3000,
       isIcon: false,
       width: 'auto'
     };

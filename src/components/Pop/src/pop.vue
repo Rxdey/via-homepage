@@ -83,6 +83,8 @@ export default {
     popShow (val) {
       if (val) {
         this.rxMask.show();
+      } else {
+        this.rxMask.hide();
       }
       this.$emit('input', val);
     }

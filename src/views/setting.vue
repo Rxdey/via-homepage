@@ -6,24 +6,34 @@
     <div class="setting-list">
       <div class="small-title">基本</div>
       <cell-group>
-        <cell title="选择默认搜索" is-link />
-        <cell title="更换背景图" is-link />
-        <cell title="更换logo" is-link />
-        <cell title="添加快捷导航" is-link />
+        <cell title="选择默认搜索" is-link @click="setting(0)" />
+        <cell title="更换背景图" is-link @click="setting(1)" />
+        <cell title="更换logo" is-link @click="setting(2)" />
+        <cell title="添加快捷导航" is-link @click="setting(3)" />
       </cell-group>
       <div class="small-title">背景虚化</div>
       <div class="slider-box">
-        <van-slider v-model="isBlur" :min="0" :max="100" @change="sliderChange">
+        <van-slider v-model="blurVal" :min="0" :max="100" @change="sliderChange">
+          <div slot="button" class="custom-button"></div>
+        </van-slider>
+      </div>
+      <div class="small-title">位置(上下)</div>
+      <div class="slider-box">
+        <van-slider v-model="heightVal" :min="0" :max="100" @change="heightChnage">
           <div slot="button" class="custom-button"></div>
         </van-slider>
       </div>
       <div class="small-title">其他</div>
+      <cell-group>
+        <switch-cell @change="islogoChange" v-model="isShowLogo" title="显示logo" ></switch-cell>
+      </cell-group>
     </div>
+    <input ref="file" @change="handleFileChange" type="file" id="update" accept="image/*" hidden v-show="false">
   </div>
 </template>
 
 <script>
-import { Cell, CellGroup, Slider } from 'vant';
+import { Cell, CellGroup, Slider, SwitchCell } from 'vant';
 
 export default {
   name: 'setting',
@@ -31,24 +41,91 @@ export default {
   },
   data () {
     return {
-      isBlur: 0
+      heightVal: 0,
+      blurVal: 0,
+      logoImage: null,
+      target: 0,
+      bgImage: null,
+      isShowLogo: true
     };
   },
   computed: {
-  },
-  created () {
-  },
-  mounted () {
-  },
-  watch: {
-  },
-  methods: {
-    sliderChange (val) {
-      this.$store.commit('updateBlur', val / 10);
+    height () {
+      return this.$store.state.height;
+    },
+    blur () {
+      return this.$store.state.blur;
+    },
+    isLogo () {
+      return this.$store.state.isLogo;
     }
   },
+  mounted () {
+    this.blurVal = this.blur * 10;
+    this.heightVal = parseInt(this.height, 10);
+    this.isShowLogo = !!parseInt(this.isLogo, 10);
+  },
+  methods: {
+    setting (val) {
+      this.target = val;
+      const setConf = {
+        0: () => {
+          this.$emit('selectEngine');
+        },
+        1: this.handleUpload,
+        2: this.handleUpload,
+        3: () => { }
+      };
+      setConf[val]();
+    },
+    sliderChange (val) {
+      this.$store.commit('updateBlur', val / 10);
+    },
+    heightChnage (val) {
+      this.$store.commit('updateHeight', `${val}%`);
+    },
+    islogoChange (val) {
+      this.$store.commit('updateIsLogo', this.isShowLogo ? 1 : 0);
+    },
+    handleUpload () {
+      this.$refs.file.click();
+    },
+    handleFileChange (event) {
+      const target = {
+        2: (val) => {
+          this.$store.commit('updateLogo', val);
+        },
+        1: (val) => {
+          this.$store.commit('updateBgimg', val);
+        }
+      };
+      const file = event.target.files[0];
+      if (!file) return false;
+      if (file.size > 1572864) {
+        this.toast('由于本地存储限制，自定义图片大小请不要超过1.5兆');
+        return;
+      }
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const img = reader.result;
+        target[this.target](img);
+        this.$nextTick(() => {
+          this.$refs.file.value = '';
+        });
+      };
+    }
+  },
+  watch: {
+    // logoImage (val) {
+    //   ;
+    // },
+    // bgImage (val) {
+    //   this.$store.commit('updateBgimg', val);
+    // }
+  },
   components: {
-    Cell, CellGroup, vanSlider: Slider
+    Cell, CellGroup, vanSlider: Slider, SwitchCell
   }
 };
 </script>
@@ -96,7 +173,7 @@ export default {
     position: relative;
     padding: 0 30px;
     margin: 50px 0;
-    .custom-button{
+    .custom-button {
       @size: 40px;
       width: @size;
       height: @size;

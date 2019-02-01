@@ -9,6 +9,16 @@ const mutations = {
     state.bgimg = data;
     setItem('bgimg', data);
   },
+  // 位置
+  updateHeight(state, data) {
+    state.height = data;
+    setItem('height', data);
+  },
+  // 是否显示logo
+  updateIsLogo(state, data) {
+    state.isLogo = data;
+    setItem('isLogo', data);
+  },
   // 自定义logo
   updateLogo(state, data) {
     state.logo = data;
