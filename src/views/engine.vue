@@ -7,16 +7,16 @@
     <div class="engine">
       <radio-group v-model="engine">
         <cell-group>
-          <cell v-for="(item,index) in searchRules" :key="index" :title="item.name" clickable @click="setEngine(index)">
+          <cell v-for="(item,index) in searchEngine" :key="index" :title="item.name" clickable @click="setEngine(index)">
             <div class="icon" slot="icon"><img :src="getUrl(item.url)[1] + '://' + getUrl(item.url)[2] + '/favicon.ico'" alt=""></div>
             <van-radio :name="index" />
           </cell>
         </cell-group>
       </radio-group>
     </div>
-    <div class="tool-bar">
+    <div class="tool-bar" v-show="!searchEngine[defaultRule].readonly">
       <div class="rx-btn edit" @click="edit">编辑</div>
-      <div class="rx-btn add" @click="del" v-show="!currentDate.readonly">删除</div>
+      <div class="rx-btn add" @click="del">删除</div>
     </div>
   </div>
 </template>
@@ -38,11 +38,9 @@ export default {
   computed: {
     ...mapState({
       defaultRule: state => parseInt(state.defaultRule, 10),
-      searchRules: state => [...state.searchRules, ...state.addRules]
-    }),
-    currentDate () {
-      return this.searchRules[this.engine];
-    }
+      searchEngine: state => state.searchEngine
+      // currentRule: state => state.searchEngine[state.defaultRule]
+    })
   },
   created () {
     this.engine = this.defaultRule;
@@ -50,6 +48,9 @@ export default {
   watch: {
     engine (val) {
       this.$store.commit('updateDefaultRule', val);
+    },
+    defaultRule(val) {
+      this.engine = val;
     }
   },
   methods: {
@@ -67,7 +68,9 @@ export default {
       this.$store.commit('updateDefaultRule', index);
     },
     getUrl (url) {
-      return url.match(urlReg);
+      let arr = url.match(urlReg);
+      if (!arr) arr = [];
+      return arr;
     }
   },
   components: {

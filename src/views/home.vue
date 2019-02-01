@@ -1,10 +1,10 @@
 <template>
   <div class="home">
-    <div class="menu" @click="popShow=true"><i class="iconfont icon-add"></i></div>
+    <div class="menu" @click="settingShow=true"><i class="iconfont icon-set"></i></div>
     <div class="home-block">
       <div class="home__logo">
         <img :src="logo" alt="" v-if="logo">
-        <p v-else class="logo-name">{{currentRule.name}}</p>
+        <p v-else class="logo-name">{{searchEngine[defaultRule].name}}</p>
       </div>
       <div class="home__search">
         <div class="search-form">
@@ -43,6 +43,9 @@
       </div>
     </div>
     <div class="background" :style="`background-image:url(${bgimg});filter:blur(${blur}px)`"></div>
+    <popup v-model="settingShow" position="right" class="popup">
+      <setting></setting>
+    </popup>
     <popup v-model="popShow" position="right" class="popup">
       <engine @add="addEngine" @edit="handleEdit" @del="handleDel"></engine>
     </popup>
@@ -64,9 +67,10 @@ import 'swiper/dist/css/swiper.css';
 import { http, home } from '@/common/server';
 import { popup } from '@/components/index';
 // import conf from '@/conf/conf';
+import setting from './setting.vue';
 import engine from './engine.vue';
 
-// const { bgimg, logo, blur, searchRules, defaultRule } = conf;
+// const { bgimg, logo, blur, searchEngine, defaultRule } = conf;
 export default {
   name: 'home',
   props: {
@@ -79,9 +83,11 @@ export default {
       isSearch: false,
       swiper: null,
       popShow: false,
+      settingShow: false,
       isAddEngine: false,
       engineName: '',
-      engineUrl: ''
+      engineUrl: '',
+      isEdit: false
     };
   },
   computed: {
@@ -90,12 +96,11 @@ export default {
       defaultLogo: state => state.logo,
       blur: state => state.blur,
       defaultRule: state => state.defaultRule,
-      searchRules: state => [...state.searchRules, ...state.addRules]
-    }),
-    logo () { return !this.defaultLogo ? this.searchRules[this.defaultRule].logo : this.defaultLogo; },
-    currentRule () {
-      return this.searchRules[this.defaultRule];
-    }
+      searchEngine: state => state.searchEngine,
+      // currentRule: state => state.searchEngine[state.defaultRule],
+      logo: state => (!state.defaultLogo ? state.searchEngine[state.defaultRule].logo : state.defaultLogo)
+    })
+    // logo () { return !this.defaultLogo ? this.searchEngine[this.defaultRule].logo : this.defaultLogo; }
   },
   mounted () {
     this.swiper = new Swiper('.swiper-container', {
@@ -109,10 +114,16 @@ export default {
     });
   },
   methods: {
-    handleEdit() {
-
+    handleEdit () {
+      this.engineName = this.searchEngine[this.defaultRule].name;
+      this.engineUrl = this.searchEngine[this.defaultRule].url;
+      this.isAddEngine = true;
+      this.popShow = false;
+      this.isEdit = true;
     },
-    handleDel() {},
+    handleDel () {
+      this.$store.commit('delSearchEngine', this.defaultRule);
+    },
     beforeClose (action, done) {
       if (action === 'confirm') {
         if (!this.engineName || !this.engineUrl) {
@@ -134,7 +145,12 @@ export default {
         readonly: false,
         logo: ''
       };
-      this.$store.commit('updateSearchRules', data);
+      if (!this.isEdit) {
+        this.$store.commit('updateSearchEngine', data);
+      } else {
+        this.$store.commit('editSearchEngine', { info: data, index: this.defaultRule });
+      }
+      this.isEdit = false;
     },
     addEngine () {
       this.popShow = false;
@@ -169,7 +185,7 @@ export default {
       this.handleSubmit();
     },
     handleSubmit () {
-      const url = this.currentRule.url.replace('%s', this.val);
+      const url = this.searchEngine[this.defaultRule].url.replace('%s', this.val);
       window.location.href = url;
     },
     handleClear () {
@@ -178,7 +194,7 @@ export default {
     }
   },
   components: {
-    popup, engine, Field
+    popup, engine, Field, setting
   }
 };
 </script>
@@ -249,7 +265,7 @@ export default {
     // z-index: 99;
     width: 100%;
     // top: 28%;
-    .btn-logo{
+    .btn-logo {
       position: absolute;
       width: 60px;
       text-align: center;
@@ -257,7 +273,7 @@ export default {
       top: 0;
       height: 100%;
       line-height: 80px;
-      i{
+      i {
         font-size: 38px;
       }
     }

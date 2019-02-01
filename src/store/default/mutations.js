@@ -18,10 +18,26 @@ const mutations = {
     state.blur = data;
     setItem('blur', data);
   },
-  updateSearchRules(state, data) {
-    state.addRules.push(data);
-    setItem('searchRules', JSON.stringify(state.addRules));
+
+  updateSearchEngine(state, data) {
+    state.searchEngine.push(data);
+    setItem('searchEngine', JSON.stringify(state.searchEngine));
   },
+  editSearchEngine(state, data) {
+    const temp = JSON.parse(JSON.stringify(state.searchEngine));
+    temp[data.index] = data.info;
+    state.searchEngine = temp;
+    setItem('searchEngine', JSON.stringify(state.searchEngine));
+  },
+  delSearchEngine(state, index) {
+    const temp = JSON.parse(JSON.stringify(state.searchEngine));
+    temp.splice(index, 1);
+    state.searchEngine = temp;
+    state.defaultRule = 0;
+    setItem('defaultRule', 0);
+    setItem('searchEngine', JSON.stringify(state.searchEngine));
+  },
+
   updateDefaultRule(state, data) {
     state.defaultRule = data;
     setItem('defaultRule', data);

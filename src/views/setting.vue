@@ -1,12 +1,12 @@
 <template>
-  <div class="add-engine">
+  <div class="setting">
 
   </div>
 </template>
 
 <script>
 export default {
-  name: 'addEngine',
+  name: 'setting',
   props: {
   },
   data () {
@@ -29,9 +29,10 @@ export default {
 </script>
 
 <style lang="less">
-.add-engine {
+.setting {
   width: 100%;
-  height: 100%;
   background: #fff;
+  height: 100%;
+  overflow-y: auto;
 }
 </style>
