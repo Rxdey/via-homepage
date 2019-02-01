@@ -9,7 +9,7 @@
         <cell title="选择默认搜索" is-link @click="setting(0)" />
         <cell title="更换背景图" is-link @click="setting(1)" />
         <cell title="更换logo" is-link @click="setting(2)" />
-        <cell title="添加快捷导航" is-link @click="setting(3)" />
+        <!-- <cell title="添加快捷导航" is-link @click="setting(3)" /> -->
       </cell-group>
       <div class="small-title">背景虚化 ({{blurVal}})</div>
       <div class="slider-box">
@@ -25,7 +25,8 @@
       </div>
       <div class="small-title">其他</div>
       <cell-group>
-        <switch-cell @change="islogoChange" v-model="isShowLogo" title="显示logo" ></switch-cell>
+        <switch-cell @change="islogoChange" v-model="isShowLogo" title="显示logo"></switch-cell>
+        <switch-cell @change="isUselogoChange" v-model="isUseLogo" title="启用自定义logo"></switch-cell>
       </cell-group>
     </div>
     <input ref="file" @change="handleFileChange" type="file" id="update" accept="image/*" hidden v-show="false">
@@ -46,24 +47,29 @@ export default {
       logoImage: null,
       target: 0,
       bgImage: null,
-      isShowLogo: true
+      isShowLogo: true,
+      isUseLogo: true
     };
   },
   computed: {
     height () {
-      return this.$store.state.height;
+      return parseInt(this.$store.state.height, 10);
     },
     blur () {
       return this.$store.state.blur;
     },
     isLogo () {
-      return this.$store.state.isLogo;
+      return !!parseInt(this.$store.state.isLogo, 10);
+    },
+    isDiyLogo () {
+      return !!parseInt(this.$store.state.isDiyLogo, 10);
     }
   },
   mounted () {
     this.blurVal = this.blur * 10;
-    this.heightVal = parseInt(this.height, 10);
-    this.isShowLogo = !!parseInt(this.isLogo, 10);
+    this.heightVal = this.height;
+    this.isShowLogo = this.isLogo;
+    this.isUseLogo = this.isDiyLogo;
   },
   methods: {
     setting (val) {
@@ -78,15 +84,23 @@ export default {
       };
       setConf[val]();
     },
+    // 虚化
     sliderChange (val) {
       this.$store.commit('updateBlur', val / 10);
     },
+    // 高度变化
     heightChnage (val) {
       this.$store.commit('updateHeight', `${val}%`);
     },
+    // 显示logo
     islogoChange (val) {
       this.$store.commit('updateIsLogo', val ? 1 : 0);
     },
+    // 启用自定义logo
+    isUselogoChange (val) {
+      this.$store.commit('updateIsDiyLogo', val ? 1 : 0);
+    },
+    // upload
     handleUpload () {
       this.$refs.file.click();
     },
@@ -115,14 +129,6 @@ export default {
         });
       };
     }
-  },
-  watch: {
-    // logoImage (val) {
-    //   ;
-    // },
-    // bgImage (val) {
-    //   this.$store.commit('updateBgimg', val);
-    // }
   },
   components: {
     Cell, CellGroup, vanSlider: Slider, SwitchCell

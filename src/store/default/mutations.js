@@ -19,6 +19,11 @@ const mutations = {
     state.isLogo = data;
     setItem('isLogo', data);
   },
+  // 是否启用自定义logo
+  updateIsDiyLogo(state, data) {
+    state.isDiyLogo = data;
+    setItem('isDiyLogo', data);
+  },
   // 自定义logo
   updateLogo(state, data) {
     state.logo = data;

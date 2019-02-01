@@ -98,8 +98,14 @@ export default {
       defaultRule: state => state.defaultRule,
       searchEngine: state => state.searchEngine,
       // currentRule: state => state.searchEngine[state.defaultRule],
-      logo: state => (!state.logo ? state.searchEngine[state.defaultRule].logo : state.logo),
-      isLogo: state => parseInt(state.isLogo, 10)
+      logo: state => {
+        if (!parseInt(state.isDiyLogo, 10)) {
+          return state.searchEngine[state.defaultRule].logo;
+        }
+        return !state.logo ? state.searchEngine[state.defaultRule].logo : state.logo;
+      },
+      isLogo: state => parseInt(state.isLogo, 10),
+      isDiyLogo: state => parseInt(state.isDiyLogo, 10)
     })
   },
   mounted () {
@@ -212,7 +218,7 @@ export default {
   box-sizing: border-box;
 }
 .popup {
-  width: 50%;
+  width: 60%;
   height: 100%;
 }
 .van-dialog__header {
@@ -422,7 +428,7 @@ export default {
   opacity: 0;
   transition: 0.3s all;
 }
-.van-overlay{
-  background: rgba(0,0,0,.3)
+.van-overlay {
+  background: rgba(0, 0, 0, 0.3);
 }
 </style>

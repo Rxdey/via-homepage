@@ -32,12 +32,13 @@ const isDef = (index) => {
 
 const conf = {
   bgimg: getItem('bgimg') || 'https://ws1.sinaimg.cn/large/005O2C54gy1fzppzyyod3j30jg0ylwfz.jpg', // 背景图
-  logo: getItem('logo'), // logo
+  logo: getItem('logo'), // 自定义logo
   blur: getItem('blur') || 0, // 模糊
-  searchEngine: changeArray(getItem('searchEngine')),
-  defaultRule: isDef(getItem('defaultRule')),
-  height: getItem('height') || '10%',
-  isLogo: getItem('isLogo') || '1'
+  searchEngine: changeArray(getItem('searchEngine')), // 搜索引擎
+  defaultRule: isDef(getItem('defaultRule')), // 当前搜索引擎
+  height: getItem('height') || '10%', // 位置
+  isLogo: getItem('isLogo') || '1', // 是否显示logo
+  isDiyLogo: getItem('isDiyLogo') || '1' // 是否启用自定义logo
 };
 
 export default conf;
