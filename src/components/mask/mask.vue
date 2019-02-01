@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div class="mask" v-transferDom @click="handleMask"> </div>
+    <div class="mask" id="rx-mask" @click="handleMask"> </div>
   </transition>
 </template>
 

@@ -1,13 +1,13 @@
 <template>
   <transition :name="position">
-    <div ref="popup" v-show="popShow" v-transferDom  :class="['rx-pop',position,full&&'full']" @click="clickClose" :style="width? `width:${width}`: ''">
+    <div ref="popup" v-show="popShow" v-transferDom :class="['rx-pop',position,full&&'full']" @click="clickClose" :style="width? `width:${width}`: ''">
       <slot></slot>
-      <rx-mask @mask="maskClose&&close()" v-show="mask&&popShow"></rx-mask>
+      <!-- <rx-mask @mask="maskClose&&close()" v-show="mask&&popShow"></rx-mask> -->
     </div>
   </transition>
 </template>
 <script>
-import mask from '../../mask/mask.vue';
+import CreateMask from './mask';
 
 export default {
   name: 'rxPop',
@@ -51,8 +51,18 @@ export default {
     };
   },
   mounted () {
-    // if (this.value) this.popShow = true;
     this.popShow = this.value;
+    if (this.mask) {
+      this.rxMask = new CreateMask({
+        el: '#rx-mask',
+        maskClick: () => {
+          if (this.maskClose) {
+            this.popShow = false;
+            this.rxMask.hide();
+          }
+        }
+      });
+    }
   },
   methods: {
     clickClose () {
@@ -71,11 +81,14 @@ export default {
       this.popShow = val;
     },
     popShow (val) {
+      if (val) {
+        this.rxMask.show();
+      }
       this.$emit('input', val);
     }
   },
   components: {
-    rxMask: mask
+    // rxMask: mask
   }
 };
 </script>
@@ -154,5 +167,16 @@ export default {
 .bottom-leave-to {
   transition: 0.3s;
   transform: translateY(100%);
+}
+
+#rx-mask {
+  position: fixed;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  overflow: hidden;
 }
 </style>
