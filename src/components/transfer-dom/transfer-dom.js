@@ -7,8 +7,10 @@ const transferDom = {
   },
   // update(el, binding) {},
   unbind(el) {
-    if (el) {
+    try {
       document.body.removeChild(el);
+    } catch (err) {
+      console.warn(err);
     }
   }
 };

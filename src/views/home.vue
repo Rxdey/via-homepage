@@ -60,12 +60,12 @@
 </template>
 
 <script>
-import { Field } from 'vant';
+import { Field, Popup } from 'vant';
 import Swiper from 'swiper';
 import { mapState } from 'vuex';
 import 'swiper/dist/css/swiper.css';
 import { http, home } from '@/common/server';
-import { popup } from '@/components/index';
+// import { popup } from '@/components/index';
 // import conf from '@/conf/conf';
 import setting from './setting.vue';
 import engine from './engine.vue';
@@ -99,7 +99,7 @@ export default {
       searchEngine: state => state.searchEngine,
       // currentRule: state => state.searchEngine[state.defaultRule],
       logo: state => (!state.logo ? state.searchEngine[state.defaultRule].logo : state.logo),
-      isLogo: state => state.isLogo
+      isLogo: state => parseInt(state.isLogo, 10)
     })
   },
   mounted () {
@@ -201,7 +201,7 @@ export default {
     }
   },
   components: {
-    popup, engine, Field, setting
+    popup: Popup, engine, Field, setting
   }
 };
 </script>
@@ -212,7 +212,7 @@ export default {
   box-sizing: border-box;
 }
 .popup {
-  width: 60%;
+  width: 50%;
   height: 100%;
 }
 .van-dialog__header {
@@ -421,5 +421,8 @@ export default {
 .fade-leave-to {
   opacity: 0;
   transition: 0.3s all;
+}
+.van-overlay{
+  background: rgba(0,0,0,.3)
 }
 </style>

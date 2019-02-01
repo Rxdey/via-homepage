@@ -11,13 +11,13 @@
         <cell title="更换logo" is-link @click="setting(2)" />
         <cell title="添加快捷导航" is-link @click="setting(3)" />
       </cell-group>
-      <div class="small-title">背景虚化</div>
+      <div class="small-title">背景虚化 ({{blurVal}})</div>
       <div class="slider-box">
         <van-slider v-model="blurVal" :min="0" :max="100" @change="sliderChange">
           <div slot="button" class="custom-button"></div>
         </van-slider>
       </div>
-      <div class="small-title">位置(上下)</div>
+      <div class="small-title">位置({{heightVal}})</div>
       <div class="slider-box">
         <van-slider v-model="heightVal" :min="0" :max="100" @change="heightChnage">
           <div slot="button" class="custom-button"></div>
@@ -85,7 +85,7 @@ export default {
       this.$store.commit('updateHeight', `${val}%`);
     },
     islogoChange (val) {
-      this.$store.commit('updateIsLogo', this.isShowLogo ? 1 : 0);
+      this.$store.commit('updateIsLogo', val ? 1 : 0);
     },
     handleUpload () {
       this.$refs.file.click();

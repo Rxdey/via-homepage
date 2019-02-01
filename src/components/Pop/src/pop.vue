@@ -53,14 +53,17 @@ export default {
   mounted () {
     this.popShow = this.value;
     if (this.mask) {
-      this.rxMask = new CreateMask({
-        el: '#rx-mask',
-        maskClick: () => {
-          if (this.maskClose) {
-            this.popShow = false;
-            this.rxMask.hide();
+      this.$nextTick(() => {
+        this.rxMask = new CreateMask({
+          el: '#rx-mask',
+          isShow: this.popShow,
+          maskClick: () => {
+            if (this.maskClose) {
+              this.popShow = false;
+              this.rxMask.hide();
+            }
           }
-        }
+        });
       });
     }
   },
@@ -72,9 +75,8 @@ export default {
     },
     close () {
       this.popShow = false;
+      this.rxMask.hide();
     }
-  },
-  computed: {
   },
   watch: {
     value (val) {
