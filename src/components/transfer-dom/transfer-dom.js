@@ -7,7 +7,9 @@ const transferDom = {
   },
   // update(el, binding) {},
   unbind(el) {
-    document.body.removeChild(el);
+    if (el) {
+      document.body.removeChild(el);
+    }
   }
 };
 export default transferDom;
