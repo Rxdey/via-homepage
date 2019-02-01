@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { Dialog } from 'vant';
-import 'animate.css';
+// import 'animate.css';
 import 'lib-flexible';
 import loading from 'vue-loading-rx';
 import 'vue-loading-rx/dist/vue-loading.css';

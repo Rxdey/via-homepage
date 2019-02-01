@@ -5,19 +5,8 @@
 
 @mainColor: #57be6a;
 @lineColor: #c9c9c9;
-
-.setBackground {
-  background-position: center;
-  background-size: contain;
-  background-repeat: no-repeat;
-}
 .box-shadow {
   box-shadow: 0 0 16px 0 hsla(0, 0%, 77%, 0.5);
-}
-.shadow-hover {
-  &:hover {
-    .box-shadow;
-  }
 }
 .clearfix {
   &::after {
@@ -25,57 +14,4 @@
     display: block;
     clear: both;
   }
-}
-
-.ov(@row) {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: @row;
-  -webkit-box-orient: vertical;
-  word-break: break-all;
-}
-.ov_1 {
-  .ov(@row:1);
-}
-.ov_2 {
-  .ov(@row:2);
-}
-
-
-.rx-cell__list{
-  margin-top: 20px;
-  .van-cell{
-    font-size: 32px;
-    color: #181818;
-    padding-top: 40px;
-    padding-bottom: 40px;
-  }
-  &.border{
-    border-top: 1px solid #f3f4f6;
-    border-bottom: 1px solid #f3f4f6;
-  }
-}
-.rx-cell__button{
-  width: 100%;
-  font-size: 32px;
-  color: #181818;
-  padding: 40px 0;
-  text-align: center;
-  background: #fff;
-  outline: none;
-  border: none;
-  position: relative;
-  &:active{
-    background: fade(#ccc, 5%)
-  }
-}
-
-.van-tabs__line {
-  background-color: @mainColor;
-}
-.bottom{
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
 }

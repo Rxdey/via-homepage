@@ -88,59 +88,6 @@ a:visited,
 a:focus {
   text-decoration: none;
 }
-.hide {
-  display: none;
-}
 .box-sizing (@type: border-box) {
   box-sizing: @type;
 }
-.border-radius (@radius: 5px) {
-  border-radius: @radius;
-}
-.fly(@left:100px,@right:100px) {
-  .clearfix;
-  padding-left: @left;
-  padding-right: @right;
-  .left {
-    position: relative;
-    left: -@left;
-    margin-left: -100%;
-    float: left;
-    width: @left;
-  }
-  .center {
-    float: left;
-    width: 100%;
-  }
-  .right {
-    position: relative;
-    right: -@right;
-    margin-left: -@right;
-    float: left;
-    width: @right;
-  }
-}
-.ahover {
-  &:hover {
-    color: @hoverColor;
-  }
-}
-.small {
-  color: #959595;
-  font-size: 12px;
-}
-.animated{
-  animation-duration: 0.3s
-}
-// .fadeIn{
-//   animation: fade 0.3s linear infinite;
-// }
-
-// @keyframes fadeIn {
-//   from { opacity: 0;}
-//   to {opacity: 1;}
-// }
-// @keyframes fadeOut {
-//   from { opacity: 0;}
-//   to {opacity: 1;}
-// }
