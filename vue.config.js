@@ -4,7 +4,7 @@ module.exports = {
   productionSourceMap: false,
   css: {
     modules: false,
-    extract: true,
+    extract: false,
     sourceMap: false,
     loaderOptions: {
       less: {

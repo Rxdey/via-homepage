@@ -31,14 +31,15 @@ const isDef = (index) => {
 };
 
 const conf = {
-  bgimg: getItem('bgimg') || 'https://ws1.sinaimg.cn/large/005O2C54gy1fzppzyyod3j30jg0ylwfz.jpg', // 背景图
+  bgimg: getItem('bgimg') || 'http://ww1.sinaimg.cn/large/005O2C54gy1fzr5cs91l5j30u01277sm.jpg', // 背景图
   logo: getItem('logo'), // 自定义logo
   blur: getItem('blur') || 0, // 模糊
   searchEngine: changeArray(getItem('searchEngine')), // 搜索引擎
   defaultRule: isDef(getItem('defaultRule')), // 当前搜索引擎
   height: getItem('height') || '10%', // 位置
   isLogo: getItem('isLogo') || '1', // 是否显示logo
-  isDiyLogo: getItem('isDiyLogo') || '1' // 是否启用自定义logo
+  isDiyLogo: getItem('isDiyLogo') || '1', // 是否启用自定义logo
+  isShortcut: getItem('isShortcut') || '1' // 启用快捷导航
 };
 
 export default conf;

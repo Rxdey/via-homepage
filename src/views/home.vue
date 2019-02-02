@@ -23,8 +23,9 @@
           </ul>
         </div>
       </div>
-      <!-- <div class="home__list">
-        <div class="swiper-container">
+      <div class="home__list" v-if="isFastState">
+        <swiper></swiper>
+        <!-- <div class="swiper-container">
           <div class="swiper-wrapper">
             <div class="swiper-slide">
               <div class="mark-block">
@@ -38,19 +39,20 @@
             </div>
           </div>
           <div class="swiper-pagination"></div>
-        </div>
-      </div> -->
+        </div> -->
+      </div>
     </div>
     <div class="background" :style="`background-image:url(${bgimg});filter:blur(${blur}px)`"></div>
+    <div class="bg-cover"></div>
     <popup v-model="settingShow" position="right" class="popup">
-      <setting @selectEngine="selectEngine"></setting>
+      <setting @selectEngine="selectEngine" @close="settingShow = false"></setting>
     </popup>
 
-    <popup v-model="popShow" position="right" class="popup">
+    <popup get-container="body" v-model="popShow" position="right" class="popup">
       <engine @add="addEngine" @edit="handleEdit" @del="handleDel"></engine>
     </popup>
 
-    <van-dialog v-model="isAddEngine" show-cancel-button title="添加搜索引擎" :before-close="beforeClose">
+    <van-dialog get-container="body" v-model="isAddEngine" show-cancel-button title="添加搜索引擎" :before-close="beforeClose">
 
       <field v-model="engineName" maxlength="5" label="名称" placeholder="请输入搜索引擎名称" />
       <field v-model="engineUrl" maxlength="200" type="textarea" label="网址" placeholder="网址（用“%s”代替搜索字词）" />
@@ -61,9 +63,10 @@
 
 <script>
 import { Field, Popup } from 'vant';
-import Swiper from 'swiper';
+// import Swiper from 'swiper';
 import { mapState } from 'vuex';
-import 'swiper/dist/css/swiper.css';
+// import 'swiper/dist/css/swiper.css';
+import swiper from './swiper.vue';
 import { http, home } from '@/common/server';
 // import { popup } from '@/components/index';
 // import conf from '@/conf/conf';
@@ -105,19 +108,20 @@ export default {
         return !state.logo ? state.searchEngine[state.defaultRule].logo : state.logo;
       },
       isLogo: state => parseInt(state.isLogo, 10),
-      isDiyLogo: state => parseInt(state.isDiyLogo, 10)
+      isDiyLogo: state => parseInt(state.isDiyLogo, 10),
+      isFastState: state => parseInt(state.isFastState, 10)
     })
   },
   mounted () {
-    this.swiper = new Swiper('.swiper-container', {
-      direction: 'horizontal',
-      // loop: true,
-      pagination: {
-        el: '.swiper-pagination',
-        type: 'bullets',
-        clickable: true
-      }
-    });
+    // this.swiper = new Swiper('.swiper-container', {
+    //   direction: 'horizontal',
+    //   // loop: true,
+    //   pagination: {
+    //     el: '.swiper-pagination',
+    //     type: 'bullets',
+    //     clickable: true
+    //   }
+    // });
   },
   methods: {
     selectEngine () {
@@ -207,20 +211,13 @@ export default {
     }
   },
   components: {
-    popup: Popup, engine, Field, setting
+    popup: Popup, engine, Field, setting, swiper
   }
 };
 </script>
 
 <style lang="less">
 @import url("../assets/css/public.less");
-* {
-  box-sizing: border-box;
-}
-.popup {
-  width: 60%;
-  height: 100%;
-}
 .van-dialog__header {
   padding: 30px 0;
 }
@@ -231,6 +228,13 @@ export default {
     top: 30px;
     right: 30px;
     z-index: 101;
+    // border-radius: 55px;
+    // background: rgba(0,0,0,.2);
+    // width: 55px;
+    // height: 55px;
+    overflow: hidden;
+    // text-align: center;
+    // line-height: 55px;
     cursor: pointer;
     i {
       color: #fff;
@@ -276,6 +280,7 @@ export default {
     }
   }
   &__search {
+    @inputHeight: 90px;
     padding: 10px 50px;
     position: relative;
     // z-index: 99;
@@ -283,22 +288,23 @@ export default {
     // top: 28%;
     .btn-logo {
       position: absolute;
-      width: 60px;
+      width: 70px;
       text-align: center;
       left: 0;
-      top: 0;
-      height: 100%;
-      line-height: 80px;
+      top: 50%;
+      transform: translateY(-50%);
+      // height: 100%;
+      // line-height: @inputHeight;
       i {
         font-size: 38px;
       }
     }
     .search-form {
       width: 100%;
-      padding: 0 60px;
-      border-radius: 40px;
+      padding: 0 30px 0 70px;
+      border-radius: 50px;
       background: #fff;
-      border: 1px solid #e5e5e5;
+      // border: 1px solid #ddd;
       // box-shadow: 0 0 16px 0 #f1f1f1;
       overflow: hidden;
       position: relative;
@@ -312,23 +318,27 @@ export default {
           appearance: none;
           width: 100%;
           // height: 34px;
-          height: 80px;
+          height: @inputHeight;
           font-size: 28px;
           background: #fff;
           border: none;
           outline: none;
+          line-height: 1.5;
+          &::placeholder{
+            line-height: @inputHeight;
+          }
         }
       }
     }
     .search-drop {
       position: absolute;
-      top: 110px;
+      top: 130px;
       left: 0;
       width: 100%;
       padding: 0 50px;
       z-index: 100;
       .drop-list {
-        border-radius: 40px;
+        border-radius: 50px;
         background: #fff;
         border: 1px solid #e5e5e5;
         overflow: hidden;
@@ -352,24 +362,24 @@ export default {
   &__list {
     // position: absolute;
     // top: 40%;
-    margin-top: 40px;
+    margin-top: 50px;
     width: 100%;
-    padding: 0 50px;
-    .swiper-container {
-      // background: rgba(255, 255, 255, 0.3);
-      min-height: 500px;
-      // border-radius: 40px;
-      overflow: hidden;
-      .swiper-slide,
-      .swiper-wrapper {
-        height: 100%;
-        min-height: 500px;
-      }
-      .swiper-slide {
-        // padding: 30px;
-        overflow: hidden;
-      }
-    }
+    // padding: 0 50px;
+    // .swiper-container {
+    //   // background: rgba(255, 255, 255, 0.3);
+    //   min-height: 500px;
+    //   // border-radius: 40px;
+    //   overflow: hidden;
+    //   .swiper-slide,
+    //   .swiper-wrapper {
+    //     height: 100%;
+    //     min-height: 500px;
+    //   }
+    //   .swiper-slide {
+    //     // padding: 30px;
+    //     overflow: hidden;
+    //   }
+    // }
   }
   .background {
     position: absolute;
@@ -382,41 +392,7 @@ export default {
     z-index: 1;
   }
 }
-.mark-block {
-  .mark {
-    width: 120px;
-    .mark-logo {
-      border-radius: 120px;
-      width: 120px;
-      height: 120px;
-      overflow: hidden;
-      background-position: center;
-      background-size: cover;
-      background-color: #fff;
-      box-shadow: 0 0 16px 0 #42bff8;
-      text-align: center;
-      line-height: 120px;
-      // font-weight: bold;
-      color: #fff;
-      font-size: 28px;
-      letter-spacing: 3px;
-      cursor: pointer;
-      span {
-        font-size: 40px;
-      }
-      transition: 0.3s all;
-      &:active {
-        transform: scale(0.8);
-      }
-    }
-    p {
-      text-align: center;
-      margin-top: 15px;
-      font-size: 24px;
-      color: #fff;
-    }
-  }
-}
+
 
 .fade-enter-active,
 .fade-leave-active {
@@ -430,5 +406,14 @@ export default {
 }
 .van-overlay {
   background: rgba(0, 0, 0, 0.3);
+}
+.bg-cover{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,.1);
+  z-index: 2;
 }
 </style>

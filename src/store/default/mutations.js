@@ -29,6 +29,10 @@ const mutations = {
     state.logo = data;
     setItem('logo', data);
   },
+  updateIsShortcut(state, data) {
+    state.isShortcut = data;
+    setItem('isShortcut', data);
+  },
   updateBlur(state, data) {
     state.blur = data;
     setItem('blur', data);
