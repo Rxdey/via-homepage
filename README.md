@@ -12,6 +12,10 @@
 * 配置全部放在网站缓存哦 **清除网页存储**的话就会全部变不见哦(其它可以清除)
 * 添加了一个拾色器打包出来有点大了管他的。
 
+## example
+
+### [首页](https://rxdey.github.io/via-homepage/example/#/home)
+
 
 
 
