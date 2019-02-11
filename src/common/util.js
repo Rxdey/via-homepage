@@ -94,3 +94,5 @@ export const vibrate = (delay = 1000) => {
 };
 // url解析
 export const urlReg = /(\w+):\/\/([^\:|\/]+)(\:\d*)?(.*\/)([^#|\?|\n]+)?(#.*)?(\?.*)?/i;
+// url验证
+export const isUrl = /^http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- ./?%&=]*)?$/;

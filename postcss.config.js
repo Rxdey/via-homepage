@@ -10,7 +10,7 @@ module.exports = {
       multiple: 10,
       exclude: ['vue-loading-rx'],
       rules: {
-        path: ['swiper', 'rxui', 'vant'],
+        path: ['swiper', 'rxui', 'vant', 'cordelia-vue'],
         fn: (pixels, vw) => `${2 * vw}rem`
       }
     }

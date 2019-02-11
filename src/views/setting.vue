@@ -9,7 +9,8 @@
         <cell title="选择默认搜索" is-link @click="setting(0)" />
         <cell title="更换背景图" is-link @click="actionShow=true" />
         <cell title="更换logo" is-link @click="setting(2)" />
-        <!-- <cell title="添加快捷导航" is-link @click="setting(3)" /> -->
+        <cell title="添加快捷导航" is-link @click="setting(3)" />
+        <!-- <cell title="导入导出" is-link /> -->
       </cell-group>
       <div class="small-title">背景虚化 ({{blurVal}})</div>
       <div class="slider-box">
@@ -28,6 +29,8 @@
         <switch-cell @change="islogoChange" v-model="isShowLogo" title="显示logo"></switch-cell>
         <switch-cell @change="isUselogoChange" v-model="isUseLogo" title="启用logo"></switch-cell>
         <switch-cell @change="isUseShortcutChange" v-model="isUseShortcut" title="快捷导航"></switch-cell>
+        <switch-cell @change="isCovorChange" v-model="isCovor" title="启用cover"></switch-cell>
+        <switch-cell @change="isBlackChange" v-model="isBlack" title="黑色字体"></switch-cell>
       </cell-group>
     </div>
     <actionsheet get-container="body" v-model="actionShow" @select="onSelect" :actions="bgActions" cancel-text="取消"></actionsheet>
@@ -69,7 +72,9 @@ export default {
       ],
       tempImage: '',
       dialogShow: false,
-      isUseShortcut: true
+      isUseShortcut: true, // 启用快捷导航
+      isCovor: true, // 启用covor
+      isBlack: false // 黑色字体
     };
   },
   computed: {
@@ -78,6 +83,12 @@ export default {
     },
     blur () {
       return this.$store.state.blur;
+    },
+    covor () {
+      return !!parseInt(this.$store.state.covor, 10);
+    },
+    black () {
+      return !!parseInt(this.$store.state.black, 10);
     },
     isLogo () {
       return !!parseInt(this.$store.state.isLogo, 10);
@@ -95,6 +106,8 @@ export default {
     this.isShowLogo = this.isLogo;
     this.isUseLogo = this.isDiyLogo;
     this.isUseShortcut = this.isShortcut;
+    this.isCovor = this.covor;
+    this.isBlack = this.black;
   },
   methods: {
     beforeClose (action, done) {
@@ -129,6 +142,14 @@ export default {
         3: () => { this.addShow = true; this.$emit('close'); }
       };
       setConf[val]();
+    },
+    // 启用covor
+    isBlackChange (val) {
+      this.$store.commit('updateBlack', val ? 1 : 0);
+    },
+    // 启用covor
+    isCovorChange (val) {
+      this.$store.commit('updateCovor', val ? 1 : 0);
     },
     // 启用快捷方式
     isUseShortcutChange (val) {

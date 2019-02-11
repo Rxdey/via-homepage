@@ -2,12 +2,17 @@
   <div class="swiper">
     <swipe indicator-color="white">
       <swipe-item v-for="(current, index) in cutFastTarget" :key="index">
-        <div class="mark-block">
-          <div class="mark" v-for="(item, index) in current" :key="index">
-            <div class="mark-logo" :style="`background-image:url();background-color: #26a2ff`">
-              <span>{{item.name | getFirst}}</span>{{item.name | getSecond}}
+        <div class="mark-block" :class="{black:isBlack}">
+          <div class="mark" :class="{'has-del':isEdit}" v-for="(item, index) in current" :key="index">
+            <div class="mark-box">
+              <div class="mark-logo" @touchstart.prevent="handleTouch(item.url)" @touchend.prevent="handleEnd(item.url)" @mousedown.prevent="handleTouch(item.url)" @mouseup.prevent=" handleEnd(item.url)" :style="`background-image:url(${item.icon});background-color: ${item.background}`">
+              </div>
+              <div v-show="isEdit" class="del-shortcut" @click.stop="handleDel(item.id)"><i class="iconfont icon-del"></i></div>
+              <template v-if="!item.icon">
+                <span>{{getFirst(item.name)}}</span>{{getSecond(item.name)}}
+              </template>
             </div>
-            <p>{{item.name}}</p>
+            <p class="ov_1 icon-name">{{item.name}}</p>
           </div>
         </div>
       </swipe-item>
@@ -17,24 +22,40 @@
 </template>
 <script>
 import { Swipe, SwipeItem } from 'vant';
+import { vibrate } from '@/common/util';
 
 export default {
   name: 'swiper',
   data () {
     return {
-      fastTarget: [
-
-      ]
+      // fastTarget: [
+      //   { name: '书签', url: 'folder://', id: 'url1', icon: '/static/icon/save.png', background: '' }
+      // ]
+      st: null,
+      isEdit: false
     };
   },
-  components: {
-    Swipe, SwipeItem
-  },
-  mounted () {
-  },
   methods: {
-  },
-  filters: {
+    handleDel (id) {
+      // console.log(id);
+      this.$store.commit('delShortcuts', id);
+      this.toast({ message: '删除成功', position: 'bottom' });
+      this.isEdit = false;
+    },
+    handleTouch () {
+      this.isEdit = false;
+      this.st = setTimeout(() => {
+        vibrate(50);
+        this.isEdit = true;
+        // this.toast('点击删除');
+      }, 1000);
+    },
+    handleEnd (url) {
+      if (!this.isEdit) {
+        window.location.href = url;
+      }
+      clearTimeout(this.st);
+    },
     getFirst (val) {
       return val.substring(0, 1);
     },
@@ -42,7 +63,21 @@ export default {
       return val.substring(1, 2);
     }
   },
+  mounted () {
+    document.body.addEventListener('click', () => {
+      this.isEdit = false;
+    });
+  },
+  components: {
+    Swipe, SwipeItem
+  },
   computed: {
+    isBlack () {
+      return !!parseInt(this.$store.state.black, 10);
+    },
+    fastTarget () {
+      return this.$store.state.shortcuts;
+    },
     cutFastTarget () {
       if (!this.fastTarget.length) return [];
       const arr = this.fastTarget;
@@ -66,39 +101,70 @@ export default {
   display: flex;
   flex-flow: row;
   flex-wrap: wrap;
+  .icon-name {
+    color: #fff;
+  }
+  &.black {
+    .icon-name {
+      color: #6f6f6f;
+    }
+  }
   .mark {
-    width: 120px;
+    /* width: 100px; */
     flex: 0 0 25%;
     margin-bottom: 30px;
     color: #fff;
-    .mark-logo {
-      border-radius: 120px;
-      width: 120px;
-      height: 120px;
-      overflow: hidden;
-      background-position: center;
-      background-size: cover;
-      background-color: #fff;
-      box-shadow: 0 0 16px 0 #42bff8;
-      text-align: center;
-      line-height: 120px;
-      color: #fff;
-      font-size: 28px;
-      letter-spacing: 3px;
-      cursor: pointer;
-      margin: 0 auto;
-      span {
-        font-size: 40px;
-      }
-      transition: 0.3s all;
-      &:active {
-        transform: scale(0.8);
-      }
+    &.has-del {
+      animation: shake 0.3s infinite ease;
     }
     p {
       text-align: center;
       margin-top: 15px;
       font-size: 24px;
+    }
+  }
+  .mark-box {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+    overflow: hidden;
+    margin: 0 auto;
+  }
+  .del-shortcut {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9;
+    background: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    line-height: 100px;
+    color: #f03838;
+    i {
+      font-size: 36px;
+    }
+  }
+  @keyframes shake {
+    0% {
+      -webkit-transform: rotate(0) scale(1);
+    }
+
+    20% {
+      -webkit-transform: rotate(-2deg) scale(1);
+    }
+
+    60% {
+      -webkit-transform: rotate(0) scale(1);
+    }
+
+    80% {
+      -webkit-transform: rotate(2deg) scale(1);
+    }
+
+    100% {
+      -webkit-transform: rotate(0) scale(1);
     }
   }
 }

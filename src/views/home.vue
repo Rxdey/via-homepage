@@ -6,12 +6,12 @@
         <p v-if="!logo" class="logo-name">{{searchEngine[defaultRule].name}}</p>
       </div>
       <div class="home__search">
-        <div class="search-form">
+        <div class="search-form" :class="{'border-black': !covor}">
           <div class="btn-logo">
             <i class="iconfont icon-bianji"></i>
           </div>
           <div class="input">
-            <input type="text" autocomplete="off" autofocus="autofocus" v-model="val" name="search" id="search" placeholder="准备搜点啥啊~" @input="change" @focus="onFocus" @blur="onBlur" @keydown.enter="handleSubmit">
+            <input type="text" autocomplete="off" v-model="val" name="search" id="search" placeholder="准备搜点啥啊~" @input="change" @focus="onFocus" @blur="onBlur" @keydown.enter="handleSubmit">
           </div>
           <div class="btn-clear">
             <i @click="handleClear" class="iconfont icon-31guanbi" v-show="isFocus"></i>
@@ -23,27 +23,14 @@
           </ul>
         </div>
       </div>
-      <div class="home__list" v-if="isFastState">
+      <div class="home__list" v-if="isShortcut">
         <swiper></swiper>
-        <!-- <div class="swiper-container">
-          <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <div class="mark-block">
-                <div class="mark">
-                  <div class="mark-logo" :style="`background-image:url();background-color: #26a2ff`">
-                    <span>天</span>气
-                  </div>
-                  <p>天气</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="swiper-pagination"></div>
-        </div> -->
       </div>
     </div>
     <div class="background" :style="`background-image:url(${bgimg});filter:blur(${blur}px)`"></div>
-    <div class="bg-cover"></div>
+
+    <div class="bg-cover" v-show="covor"></div>
+
     <popup v-model="settingShow" position="right" class="popup">
       <setting @selectEngine="selectEngine" @close="settingShow = false"></setting>
     </popup>
@@ -63,17 +50,12 @@
 
 <script>
 import { Field, Popup } from 'vant';
-// import Swiper from 'swiper';
 import { mapState } from 'vuex';
-// import 'swiper/dist/css/swiper.css';
 import swiper from './swiper.vue';
 import { http, home } from '@/common/server';
-// import { popup } from '@/components/index';
-// import conf from '@/conf/conf';
 import setting from './setting.vue';
 import engine from './engine.vue';
 
-// const { bgimg, logo, blur, searchEngine, defaultRule } = conf;
 export default {
   name: 'home',
   props: {
@@ -100,7 +82,6 @@ export default {
       height: state => state.height,
       defaultRule: state => state.defaultRule,
       searchEngine: state => state.searchEngine,
-      // currentRule: state => state.searchEngine[state.defaultRule],
       logo: state => {
         if (!parseInt(state.isDiyLogo, 10)) {
           return state.searchEngine[state.defaultRule].logo;
@@ -109,19 +90,12 @@ export default {
       },
       isLogo: state => parseInt(state.isLogo, 10),
       isDiyLogo: state => parseInt(state.isDiyLogo, 10),
-      isFastState: state => parseInt(state.isFastState, 10)
+      isShortcut: state => parseInt(state.isShortcut, 10),
+      black: state => parseInt(state.black, 10),
+      covor: state => parseInt(state.covor, 10)
     })
   },
   mounted () {
-    // this.swiper = new Swiper('.swiper-container', {
-    //   direction: 'horizontal',
-    //   // loop: true,
-    //   pagination: {
-    //     el: '.swiper-pagination',
-    //     type: 'bullets',
-    //     clickable: true
-    //   }
-    // });
   },
   methods: {
     selectEngine () {
@@ -251,9 +225,9 @@ export default {
     transform: translateX(-50%);
   }
   &__logo {
-    width: 300px;
-    height: 144px;
-    margin: 0 auto 20px auto;
+    width: 380px;
+    height: 120px;
+    margin: 0 auto 15px auto;
     // position: absolute;
     // top: 15%;
     // left: 50%;
@@ -312,6 +286,9 @@ export default {
       flex-flow: row;
       justify-content: space-between;
       align-items: center;
+      &.border-black{
+        border: 1px solid #6f6f6f;
+      }
       .input {
         flex: 1;
         input {
@@ -324,7 +301,7 @@ export default {
           border: none;
           outline: none;
           line-height: 1.5;
-          &::placeholder{
+          &::placeholder {
             line-height: @inputHeight;
           }
         }
@@ -393,7 +370,6 @@ export default {
   }
 }
 
-
 .fade-enter-active,
 .fade-leave-active {
   opacity: 1;
@@ -407,13 +383,13 @@ export default {
 .van-overlay {
   background: rgba(0, 0, 0, 0.3);
 }
-.bg-cover{
+.bg-cover {
   position: absolute;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
-  background: rgba(0,0,0,.1);
+  background: rgba(0, 0, 0, 0.1);
   z-index: 2;
 }
 </style>

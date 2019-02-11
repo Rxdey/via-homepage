@@ -2,9 +2,10 @@ module.exports = {
   baseUrl: './',
   assetsDir: 'static',
   productionSourceMap: false,
+  filenameHashing: false,
   css: {
     modules: false,
-    extract: true,
+    extract: false,
     sourceMap: false,
     loaderOptions: {
       less: {
