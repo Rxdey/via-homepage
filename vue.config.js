@@ -5,7 +5,7 @@ module.exports = {
   filenameHashing: false,
   css: {
     modules: false,
-    extract: false,
+    extract: true,
     sourceMap: false,
     loaderOptions: {
       less: {

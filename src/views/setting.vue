@@ -1,7 +1,7 @@
 <template>
   <div class="user-setting">
     <div class="title">
-      <p>定制</p>
+      <p>定制 (注: 清除网页存储配置会丢失)</p>
     </div>
     <div class="setting-list">
       <div class="small-title">基本</div>
