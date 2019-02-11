@@ -64,7 +64,8 @@ export default {
     }
   },
   mounted () {
-    document.body.addEventListener('click', () => {
+    document.body.addEventListener('mousedown', (event) => {
+      event.stopPropagation();
       this.isEdit = false;
     });
   },
