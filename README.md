@@ -1,7 +1,8 @@
 # 浏览器主页定制  
 > 使用yarn安装 npm会出错很奇怪啊  
 
-**注意：全部配置使用`localStorage`本地缓存，清空网页存储就没了哦**
+**注意：全部配置使用`localStorage`本地缓存，清空网页存储就没了哦**   
+**如果不兼容，emmmm 保重**
 
 ## 介绍  
 ### [这里查看](https://rxdey.github.io/via-homepage/example/#/home)
