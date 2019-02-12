@@ -4,6 +4,7 @@
 **注意：全部配置使用`localStorage`本地缓存，清空网页存储就没了哦**
 
 ## 介绍  
+### [这里查看](https://rxdey.github.io/via-homepage/example/#/home)
 
 * 为了方便定制 没什么艺术细胞审美捉鸡 主要是参考chrome上的`Infinity 新标签页
 `插件
@@ -108,10 +109,6 @@
 * 快捷导航: 显示隐藏导航  
 * 启用covor: 默认在背景图上添加了遮罩层让白色logo或者字体更明显关闭此项会给搜索框添加一个黑色边框  
 * 黑色字体: emmmmmm
-
-## example
-
-### [首页](https://rxdey.github.io/via-homepage/example/#/home)
 
 
 
