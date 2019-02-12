@@ -13,6 +13,18 @@ const mutations = {
     state.shortcuts = current;
     setItem('shortcuts', JSON.stringify(current));
   },
+  // 编辑快捷导航
+  editShortcuts(state, data) {
+    const temp = JSON.parse(JSON.stringify(state.shortcuts));
+    const current = temp.map(item => {
+      if (item.id === data.id) {
+        item = data;
+      }
+      return item;
+    });
+    state.shortcuts = current;
+    setItem('shortcuts', JSON.stringify(current));
+  },
   // logo
   changeLoading(state, data) {
     state.loading = data;

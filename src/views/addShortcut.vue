@@ -4,7 +4,7 @@
       <p>添加快捷导航</p>
     </div>
     <div class="add-list">
-      <div class="small-title">首页长按图标可删除导航</div>
+      <div class="small-title">首页长按图标可编辑导航</div>
       <cell-group>
         <field v-model="url" placeholder="网址"></field>
         <field v-model="name" placeholder="名称"></field>

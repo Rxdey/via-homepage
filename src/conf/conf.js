@@ -9,9 +9,9 @@ const getItem = name => {
 
 const defaultEngine = [
   {
-    name: '谷歌',
-    url: 'https://www.google.com/search?q=%s',
-    logo: './icon/googlew.png',
+    name: '百度',
+    url: 'https://www.baidu.com/s?word=%s',
+    logo: './icon/baidu.png',
     readonly: true
   },
   {
@@ -20,9 +20,22 @@ const defaultEngine = [
     logo: './icon/bying.png',
     readonly: true
   },
-  { name: '百度', url: 'https://www.baidu.com/s?word=%s', logo: './icon/baidu.png', readonly: true }
+  {
+    name: '谷歌',
+    url: 'https://www.google.com/search?q=%s',
+    logo: './icon/googlew.png',
+    readonly: true
+  }
 ];
 const defaultShortcut = [
+  {
+    name: '酷安',
+    url: 'http://www.coolapk.com/',
+    id: 'url0',
+    icon:
+      'https://infinityicon.infinitynewtab.com/user-share-icon/59805ef5d433ee5c042d31008b031123.png',
+    background: '#26a2ff'
+  },
   {
     name: '哔哩哔哩',
     url: 'https://www.bilibili.com/',
@@ -35,6 +48,14 @@ const defaultShortcut = [
     url: 'https://www.zhihu.com/',
     id: 'url2',
     icon: './icon/zhihu.png',
+    background: '#26a2ff'
+  },
+  {
+    name: '新浪微博',
+    url: 'http://weibo.com/',
+    id: 'url3',
+    icon:
+      'https://infinityicon.infinitynewtab.com/user-share-icon/0f2ab700f8fff5b6e9ebc7d6a976981f.png',
     background: '#26a2ff'
   }
 ];
@@ -66,7 +87,7 @@ const isDef = index => {
 };
 
 const conf = {
-  bgimg: getItem('bgimg') || 'http://ww1.sinaimg.cn/large/005O2C54gy1fzr5cs91l5j30u01277sm.jpg', // 背景图
+  bgimg: getItem('bgimg') || 'https://ws1.sinaimg.cn/large/005O2C54gy1g02ic41awxj30jg0t6wev.jpg', // 背景图
   logo: getItem('logo'), // 自定义logo
   blur: getItem('blur') || 0, // 模糊
   searchEngine: changeArray(getItem('searchEngine'), 'searchEngine'), // 搜索引擎

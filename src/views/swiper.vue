@@ -3,51 +3,57 @@
     <swipe indicator-color="white">
       <swipe-item v-for="(current, index) in cutFastTarget" :key="index">
         <div class="mark-block" :class="{black:isBlack}">
-          <div class="mark" :class="{'has-del':isEdit}" v-for="(item, index) in current" :key="index">
+          <div class="mark" v-for="(item, index) in current" :key="index">
             <div class="mark-box">
-              <div class="mark-logo" @touchstart.prevent="handleTouch(item.url)" @touchend.prevent="handleEnd(item.url)" @mousedown.prevent="handleTouch(item.url)" @mouseup.prevent=" handleEnd(item.url)" :style="`background-image:url(${item.icon});background-color: ${item.background}`">
+              <div class="mark-logo" @touchstart.prevent="handleTouch(item)" @touchend.prevent="handleEnd(item.url)" @mousedown.prevent="handleTouch(item)" @mouseup.prevent=" handleEnd(item.url)" :style="`background-image:url(${item.icon});background-color: ${item.background}`">
+                <div v-if="!item.icon"><span>{{getFirst(item.name)}}</span>{{getSecond(item.name)}}</div>
               </div>
-              <div v-show="isEdit" class="del-shortcut" @click.stop="handleDel(item.id)"><i class="iconfont icon-del"></i></div>
-              <template v-if="!item.icon">
-                <span>{{getFirst(item.name)}}</span>{{getSecond(item.name)}}
-              </template>
+              <!-- <div v-show="isEdit" class="del-shortcut" @click.stop="handleDel(item.id)"><i class="iconfont icon-del"></i></div> -->
             </div>
             <p class="ov_1 icon-name">{{item.name}}</p>
           </div>
         </div>
       </swipe-item>
     </swipe>
-
+    <popup get-container="body" v-model="isEdit" position="right" class="popup">
+      <shortcut-edit @edit="handleEdit" @delete="handleDel" :shortcut="shortcut"></shortcut-edit>
+    </popup>
   </div>
 </template>
 <script>
-import { Swipe, SwipeItem } from 'vant';
+import { Swipe, SwipeItem, Popup } from 'vant';
 import { vibrate } from '@/common/util';
+import shortcutEdit from './shortcutEdit.vue';
 
 export default {
   name: 'swiper',
   data () {
     return {
+      // popShow: false,
       // fastTarget: [
       //   { name: '书签', url: 'folder://', id: 'url1', icon: '/static/icon/save.png', background: '' }
       // ]
       st: null,
-      isEdit: false
+      isEdit: false,
+      shortcut: {}
     };
   },
   methods: {
+    handleEdit (data) {
+      this.$store.commit('editShortcuts', data);
+      this.isEdit = false;
+    },
     handleDel (id) {
-      // console.log(id);
       this.$store.commit('delShortcuts', id);
       this.toast({ message: '删除成功', position: 'bottom' });
       this.isEdit = false;
     },
-    handleTouch () {
+    handleTouch (item) {
       this.isEdit = false;
       this.st = setTimeout(() => {
         vibrate(50);
         this.isEdit = true;
-        // this.toast('点击删除');
+        this.shortcut = item;
       }, 1000);
     },
     handleEnd (url) {
@@ -64,13 +70,13 @@ export default {
     }
   },
   mounted () {
-    document.body.addEventListener('mousedown', (event) => {
-      event.stopPropagation();
-      this.isEdit = false;
-    });
+    // document.body.addEventListener('mousedown', (event) => {
+    //   event.stopPropagation();
+    //   this.isEdit = false;
+    // });
   },
   components: {
-    Swipe, SwipeItem
+    Swipe, SwipeItem, Popup, shortcutEdit
   },
   computed: {
     isBlack () {
@@ -98,7 +104,7 @@ export default {
   min-height: 500px;
 }
 .mark-block {
-  padding: 10px 50px;
+  padding: 10px 10px;
   display: flex;
   flex-flow: row;
   flex-wrap: wrap;
