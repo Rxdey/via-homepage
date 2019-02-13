@@ -27,6 +27,7 @@
         <swiper></swiper>
       </div>
     </div>
+    <section class="poe" :class="{black: black}"><span>{{randPoe}}</span></section>
     <div class="background" :style="`background-image:url(${bgimg});filter:blur(${blur}px)`"></div>
 
     <div class="bg-cover" v-show="covor"></div>
@@ -72,7 +73,8 @@ export default {
       isAddEngine: false, // 添加搜索
       engineName: '',
       engineUrl: '',
-      isEdit: false
+      isEdit: false,
+      poes: null
     };
   },
   computed: {
@@ -93,11 +95,46 @@ export default {
       isShortcut: state => parseInt(state.isShortcut, 10),
       black: state => parseInt(state.black, 10),
       covor: state => parseInt(state.covor, 10)
-    })
+    }),
+    randPoe () {
+      if (!this.poes) return '';
+      const all = this.poes.origin.content;
+      const rands = Math.floor(Math.random() * all.length);
+      return all[rands];
+    }
   },
   mounted () {
+    this.getDayPoe();
+    // console.log(this.getDay());
   },
   methods: {
+    getDay () {
+      const date = new Date();
+      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    },
+    isPoes () {
+      const poes = window.localStorage.getItem('poes');
+      if (!poes) return { bool: false };
+      return { bool: JSON.parse(poes).date === this.getDay(), poes: JSON.parse(poes).poes };
+    },
+    // 每日诗词
+    async getDayPoe () {
+      if (this.isPoes().bool) {
+        this.poes = this.isPoes().poes;
+        return;
+      }
+      const token = window.localStorage.getItem('jrsc_yonken');
+      let data = {};
+      if (token) {
+        data = { 'X-User-Token': token };
+      }
+      const poeRes = await http(home.jinrishici, data);
+      if (poeRes.token) {
+        window.localStorage.setItem('jrsc_yonken', poeRes.token);
+      }
+      this.poes = poeRes.data;
+      window.localStorage.setItem('poes', JSON.stringify({ poes: poeRes.data, date: this.getDay() }));
+    },
     selectEngine () {
       this.settingShow = false;
       this.popShow = true;
@@ -286,7 +323,7 @@ export default {
       flex-flow: row;
       justify-content: space-between;
       align-items: center;
-      &.border-black{
+      &.border-black {
         border: 1px solid #6f6f6f;
       }
       .input {
@@ -391,5 +428,41 @@ export default {
   left: 0;
   background: rgba(0, 0, 0, 0.1);
   z-index: 2;
+}
+.poe {
+  position: absolute;
+  color: #fff;
+  bottom: 50px;
+  width: 90%;
+  left: 5%;
+  text-align: center;
+  z-index: 99;
+  overflow: hidden;
+  span {
+    position: relative;
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      border-bottom: 1px solid #fff;
+      width: 100%;
+    }
+    &::before {
+      left: -110%;
+    }
+    &::after {
+      right: -110%;
+    }
+  }
+
+  &.black {
+    color: #666;
+    span::before,
+    span::after {
+      border-bottom: 1px solid #666;
+    }
+  }
+  // }
 }
 </style>

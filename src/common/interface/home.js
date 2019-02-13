@@ -9,7 +9,20 @@ export const baidu = {
   method: 'get',
   type: 'jsonp'
 };
+export const getToken = {
+  url: 'https://v2.jinrishici.com/token',
+  method: 'get'
+};
+export const jinrishici = {
+  url: 'https://v2.jinrishici.com/one.json',
+  method: 'get',
+  headers: {
+    // 'X-User-Token': ''
+  }
+};
 
 export default {
-  baidu
+  baidu,
+  getToken,
+  jinrishici
 };

@@ -5,6 +5,7 @@ import qs from 'qs';
 import './interceptors';
 import './jsonp';
 
+axios.defaults.withCredentials = true;
 const config = {
   method: 'get',
   url: '/',
