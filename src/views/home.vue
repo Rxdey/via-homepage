@@ -440,6 +440,7 @@ export default {
   overflow: hidden;
   span {
     position: relative;
+    .ov_1;
     &::before,
     &::after {
       content: "";
