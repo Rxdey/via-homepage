@@ -96,3 +96,15 @@ export const vibrate = (delay = 1000) => {
 export const urlReg = /(\w+):\/\/([^\:|\/]+)(\:\d*)?(.*\/)([^#|\?|\n]+)?(#.*)?(\?.*)?/i;
 // url验证
 export const isUrl = /^http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- ./?%&=]*)?$/;
+
+export const throttle = (...args) => {
+  const [method, delay = 200] = args;
+  let timer = null;
+  return function() {
+    const context = this;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      method.apply(context, args);
+    }, delay);
+  };
+};

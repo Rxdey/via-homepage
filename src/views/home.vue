@@ -27,7 +27,7 @@
         <swiper></swiper>
       </div>
     </div>
-    <section class="poe" :class="{black: black}"><span>{{randPoe}}</span></section>
+    <section class="poe" v-show="hidePoe" :class="{black: black}"><span>{{randPoe}}</span></section>
     <div class="background" :style="`background-image:url(${bgimg});filter:blur(${blur}px)`"></div>
 
     <div class="bg-cover" v-show="covor"></div>
@@ -54,6 +54,7 @@ import { Field, Popup } from 'vant';
 import { mapState } from 'vuex';
 import swiper from './swiper.vue';
 import { http, home } from '@/common/server';
+import { throttle } from '@/common/util';
 import setting from './setting.vue';
 import engine from './engine.vue';
 
@@ -74,7 +75,8 @@ export default {
       engineName: '',
       engineUrl: '',
       isEdit: false,
-      poes: null
+      poes: null,
+      hidePoe: true
     };
   },
   computed: {
@@ -105,7 +107,11 @@ export default {
   },
   mounted () {
     this.getDayPoe();
-    // console.log(this.getDay());
+    const height = window.innerHeight;
+    window.addEventListener('resize', throttle(() => {
+      const nowH = window.innerHeight;
+      this.hidePoe = nowH + 10 >= height;
+    }), 200);
   },
   methods: {
     getDay () {
