@@ -108,3 +108,30 @@ export const throttle = (...args) => {
     }, delay);
   };
 };
+
+export const createDataDownload = (data = null, fileName = '') => {
+  if (!data) return false;
+  const blob = new Blob([data]);
+
+  const aLink = document.createElement('a');
+  aLink.download = fileName;
+  aLink.style.display = 'none';
+  aLink.href = URL.createObjectURL(blob);
+  document.body.appendChild(aLink);
+  aLink.click();
+  document.body.removeChild(aLink);
+};
+
+export const readFile = file => {
+  if (!file) return false;
+  const reader = new FileReader();
+  reader.readAsText(file);
+  return new Promise((resolve, reject) => {
+    reader.onload = function() {
+      resolve(this.result);
+    };
+    reader.onerror = function(err) {
+      reject(err);
+    };
+  });
+};

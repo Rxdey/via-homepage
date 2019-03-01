@@ -98,7 +98,8 @@ const conf = {
   isShortcut: getItem('isShortcut') || '1', // 启用快捷导航
   shortcuts: changeArray(getItem('shortcuts'), 'shortcuts'),
   covor: getItem('covor') || '1', // 是否启用covor
-  black: getItem('black') || '0' // 黑色字体
+  black: getItem('black') || '0', // 黑色字体
+  configTarget: 'rx_via_home'
 };
 
 export default conf;

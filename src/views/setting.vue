@@ -10,7 +10,8 @@
         <cell title="更换背景图" is-link @click="actionShow=true" />
         <cell title="更换logo" is-link @click="setting(2)" />
         <cell title="添加快捷导航" is-link @click="setting(3)" />
-        <!-- <cell title="导入导出" is-link /> -->
+        <cell title="导出配置" is-link @click="handleExportConf" />
+        <cell title="导入配置" is-link @click="handleImportConf" />
       </cell-group>
       <div class="small-title">背景虚化 ({{blurVal}})</div>
       <div class="slider-box">
@@ -44,12 +45,15 @@
     </popup>
 
     <input ref="file" @change="handleFileChange" type="file" id="update" accept="image/*" hidden v-show="false">
+
+    <input ref="config" @change="handleImportConfChange" type="file" id="importConfig" accept="*/*" hidden v-show="false">
   </div>
 </template>
 
 <script>
 import { Cell, CellGroup, Slider, SwitchCell, Actionsheet, Field, Popup } from 'vant';
 import addShortcut from './addShortcut.vue';
+import { createDataDownload, readFile } from '../common/util';
 
 export default {
   name: 'setting',
@@ -110,6 +114,27 @@ export default {
     this.isBlack = this.black;
   },
   methods: {
+    handleExportConf() {
+      const config = JSON.stringify(this.$store.state);
+      createDataDownload(config, `viaHomePage_config_${new Date().getTime()}.txt`);
+    },
+    handleImportConf() {
+      this.$refs.config.value = '';
+      this.$refs.config.click();
+    },
+    async handleImportConfChange(event) {
+      const file = event.target.files[0];
+      const res = await readFile(file);
+      if (!res) { this.toast('配置读取失败'); return false; }
+      let config;
+      try {
+        config = JSON.parse(res);
+        if (!config.configTarget || config.configTarget !== 'rx_via_home') throw '';
+        this.$store.commit('importUserConfig', config);
+      } catch (err) {
+        this.toast('无效的配置文件');
+      }
+    },
     beforeClose (action, done) {
       if (action === 'confirm') {
         if (!this.tempImage) {
@@ -186,11 +211,6 @@ export default {
       };
       const file = event.target.files[0];
       if (!file) return false;
-      // const img = URL.createObjectURL(file);
-      // target[this.target](img);
-      // this.$nextTick(() => {
-      //   this.$refs.file.value = '';
-      // });
       if (file.size > 1572864) {
         this.toast('由于本地存储限制，自定义图片大小请不要超过1.5兆');
         return;

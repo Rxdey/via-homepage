@@ -1,6 +1,18 @@
 const setItem = (name, data) => window.localStorage.setItem(name, data);
 
 const mutations = {
+  // 读取配置
+  importUserConfig(state, data) {
+    // state = {
+    //   ...data
+    // };
+    Object.keys(data).map(item => {
+      state[item] = data[item];
+      // setItem(item, data[item]);
+      const newData = typeof data[item] === 'string' ? data[item] : JSON.stringify(data[item]);
+      setItem(item, newData);
+    });
+  },
   // 添加快捷导航
   updateShortcuts(state, data) {
     state.shortcuts.push(data);
