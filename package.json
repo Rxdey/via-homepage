@@ -11,6 +11,7 @@
     "amfe-flexible": "^2.2.1",
     "animate.css": "^3.7.0",
     "axios": "^0.18.0",
+    "file-saver": "^2.0.1",
     "lib-flexible": "^0.3.2",
     "qs": "^6.6.0",
     "vant": "^1.5.7",

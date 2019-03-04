@@ -10,7 +10,7 @@
         <cell title="更换背景图" is-link @click="actionShow=true" />
         <cell title="更换logo" is-link @click="setting(2)" />
         <cell title="添加快捷导航" is-link @click="setting(3)" />
-        <cell title="导出配置" is-link @click="handleExportConf" />
+        <cell title="导出配置(via上暂时导出不能)" is-link @click="handleExportConf" />
         <cell title="导入配置" is-link @click="handleImportConf" />
       </cell-group>
       <div class="small-title">背景虚化 ({{blurVal}})</div>
@@ -52,8 +52,9 @@
 
 <script>
 import { Cell, CellGroup, Slider, SwitchCell, Actionsheet, Field, Popup } from 'vant';
+import { saveAs } from 'file-saver';
 import addShortcut from './addShortcut.vue';
-import { createDataDownload, readFile } from '../common/util';
+import { readFile } from '../common/util';
 
 export default {
   name: 'setting',
@@ -114,15 +115,16 @@ export default {
     this.isBlack = this.black;
   },
   methods: {
-    handleExportConf() {
+    handleExportConf () {
       const config = JSON.stringify(this.$store.state);
-      createDataDownload(config, `viaHomePage_config_${new Date().getTime()}.txt`);
+      const blob = new Blob([config], { type: 'text/plain;charset=utf-8' });
+      saveAs(blob, `viaHomePage_config_${new Date().getTime()}.txt`);
     },
-    handleImportConf() {
+    handleImportConf () {
       this.$refs.config.value = '';
       this.$refs.config.click();
     },
-    async handleImportConfChange(event) {
+    async handleImportConfChange (event) {
       const file = event.target.files[0];
       const res = await readFile(file);
       if (!res) { this.toast('配置读取失败'); return false; }

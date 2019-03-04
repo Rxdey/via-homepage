@@ -112,7 +112,6 @@ export const throttle = (...args) => {
 export const createDataDownload = (data = null, fileName = '') => {
   if (!data) return false;
   const blob = new Blob([data]);
-
   const aLink = document.createElement('a');
   aLink.download = fileName;
   aLink.style.display = 'none';
